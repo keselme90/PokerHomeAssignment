@@ -1,5 +1,9 @@
 ﻿  main.cpp
-  Hand.cpp
-  Generating Code...
+c:\users\edward\documents\visual studio 2015\projects\igateshomeassignmet\igateshomeassignmet\main.cpp(27): warning C4018: '<': signed/unsigned mismatch
+c:\users\edward\documents\visual studio 2015\projects\igateshomeassignmet\igateshomeassignmet\main.cpp(56): warning C4018: '<': signed/unsigned mismatch
+c:\users\edward\documents\visual studio 2015\projects\igateshomeassignmet\igateshomeassignmet\main.cpp(120): warning C4018: '<': signed/unsigned mismatch
+c:\users\edward\documents\visual studio 2015\projects\igateshomeassignmet\igateshomeassignmet\main.cpp(159): warning C4018: '<': signed/unsigned mismatch
+c:\users\edward\documents\visual studio 2015\projects\igateshomeassignmet\igateshomeassignmet\main.cpp(346): warning C4018: '<': signed/unsigned mismatch
+c:\users\edward\documents\visual studio 2015\projects\igateshomeassignmet\igateshomeassignmet\main.cpp(97): warning C4715: 'checkWhatPokerHandThisIs': not all control paths return a value
   IGatesHomeAssignmet.vcxproj -> C:\Users\Edward\documents\visual studio 2015\Projects\IGatesHomeAssignmet\Debug\IGatesHomeAssignmet.exe
   IGatesHomeAssignmet.vcxproj -> C:\Users\Edward\documents\visual studio 2015\Projects\IGatesHomeAssignmet\Debug\IGatesHomeAssignmet.pdb (Partial PDB)

@@ -13,6 +13,6 @@ public:
 	
 	Card(std::string card);
 	std::string toString();
-	char getRank();
+	char getRank() const;
 	char getSuit();
 };

@@ -15,22 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FileHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Card.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Board.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CardMapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PokerRanking.h">
+    <ClInclude Include="PokerHandMapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -45,6 +39,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CardMapping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PokerHandMapping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,10 +1,13 @@
 #include "Hand.h"
 
-
+/*
+	Constructor
+	Receives a string that represents the Cards.
+	Parse the string and creates a vector of cards.
+*/
 Hand::Hand(std::string cards) {
 
 	cards = cards.substr(cards.find(":") + 1);
-
 	while (cards.size() != 2) {
 
 		Card card(cards.substr(0, cards.find("-")));
@@ -13,34 +16,19 @@ Hand::Hand(std::string cards) {
 	}
 	Card card(cards);
 	myCards.push_back(card);
-
-	lowestValue = 14;
-	for (std::vector<Card>::iterator iter = myCards.begin(); iter != myCards.end(); iter++) {
-		if (CardMapping::mymap[iter->getRank()] < lowestValue)
-			lowestValue = CardMapping::mymap[iter->getRank()];
-	}
 }
 
-bool lowToHighComparison(Card a, Card b) {
-
-	return (CardMapping::mymap[a.getRank()] < CardMapping::mymap[b.getRank()]);
-}
-
-void Hand::sortLowToHigh() {
-
-	std::sort(myCards.begin(), myCards.end(), lowToHighComparison);
-}
-
-const int Hand::getLowestValue() const {
-
-	return lowestValue;
-}
-
+/**
+Returns a specific card from the vector according a given index.
+*/
 Card Hand::getCard(int index) {
 
 	return myCards[index];
 }
 
+/**
+* Prints the deck of cards to the screen
+*/
 void Hand::printHand(){
 
 	std::cout << "My hand is: ";

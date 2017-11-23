@@ -110,18 +110,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Board.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="CardMapping.h" />
-    <ClInclude Include="FileHandler.h" />
     <ClInclude Include="Hand.h" />
-    <ClInclude Include="PokerRanking.h" />
+    <ClInclude Include="PokerHandMapping.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="CardMapping.cpp" />
     <ClCompile Include="Hand.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PokerHandMapping.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

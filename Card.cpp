@@ -13,12 +13,12 @@ std::string Card::toString() {
 	return fullCard;
 }
 
-char Card::getRank()
+ char Card::getRank() const
 {
 	return rank;
 }
 
-char Card::getSuit()
+ char Card::getSuit() 
 {
 	return suit;
 }
