@@ -8,6 +8,7 @@ private:
 	char rank;
 	char suit;
 	std::string fullCard;
+	unsigned int strength;
 
 public:
 	
@@ -15,4 +16,5 @@ public:
 	std::string toString();
 	char getRank() const;
 	char getSuit();
+	const unsigned int getStrength() const;
 };
