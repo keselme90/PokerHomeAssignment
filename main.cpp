@@ -1,17 +1,15 @@
 #include <iostream>
 #include <fstream>
-#include <string>
-#include <vector>
+#include <algorithm>
 #include "Hand.h"
 #include "PokerHandMapping.h"
-#include <map>
-#include <algorithm>
+
 
 /*Function that helps to sort the cards in a vector.
 */
-bool sortFunc(Card a, Card b) {
+bool sortFunc(const Card &firstCard,const Card &secondCard) {
 
-	return CardMapping::mymap[a.getRank()] < CardMapping::mymap[b.getRank()];
+	return CardMapping::mymap[firstCard.getRank()] < CardMapping::mymap[secondCard.getRank()];
 }
 
 /*Checks if the given vector represents Straight Hand in poker.
@@ -34,10 +32,10 @@ bool checkIfStraight(std::vector<Card> vec) {
 /**
 * Checks if the given vector represents Flush hand in poker.
 */
-bool checkIfFlush(std::vector<Card> &vec) {
+bool checkIfFlush(const std::vector<Card> &vec) {
 
 	char suit = vec[0].getSuit();// Get the frist suit
-	for (std::vector<Card>::iterator it = vec.begin() + 1; it != vec.end(); it++) { // Check if all suits are the same.
+	for (std::vector<Card>::const_iterator it = vec.begin() + 1; it != vec.end(); it++) { // Check if all suits are the same.
 
 		if (it->getSuit() != suit)
 			return false;
@@ -49,7 +47,7 @@ bool checkIfFlush(std::vector<Card> &vec) {
 /**
 * Function checks the given vector and returns the Poker Hand the vector represents.
 */
-std::string checkWhatPokerHandThisIs(std::vector<Card> &hand) {
+std::string checkWhatPokerHandThisIs(const std::vector<Card> &hand) {
 
 	std::map<char, int> tempMap;//Create a map to count card appearances.
 
@@ -99,27 +97,27 @@ std::string checkWhatPokerHandThisIs(std::vector<Card> &hand) {
 /**
 * Function returns a vector of a possible legal card sequence.
 */
-std::vector<Card> createHandVariation(const int i, const int j, const int n, const int m, const int k, Hand &hand, const std::vector<Card> &board) {
+std::vector<Card> createHandVariation(const int &i, const int &j, const int &n, const int &m, const int &k, Hand &hand, const std::vector<Card> &board) {
 
-	std::vector<Card> tempVec;
-	tempVec.push_back(hand.getCard(i));
-	tempVec.push_back(hand.getCard(j));
-	tempVec.push_back(board[n]);
-	tempVec.push_back(board[m]);
-	tempVec.push_back(board[k]);
+	std::vector<Card> possibleVariationVector;
+	possibleVariationVector.push_back(hand.getCard(i));
+	possibleVariationVector.push_back(hand.getCard(j));
+	possibleVariationVector.push_back(board[n]);
+	possibleVariationVector.push_back(board[m]);
+	possibleVariationVector.push_back(board[k]);
 
-	return tempVec;
+	return possibleVariationVector;
 }
 
 /**
 * Function calcualtes and returns the sum of the card values in a given vector.
 */
-int calculateSumOfCardInHand(std::vector<Card> &vec) {
+int calculateSumOfCardInHand(const std::vector<Card> &vec) {
 	 
 	int sum = 0;
-	for (int i = 0; i < vec.size(); i++) {
-		sum += vec[i].getStrength();
-	}
+	for (std::vector<Card>::const_iterator it = vec.begin(); it != vec.end(); it++) 
+		sum += (*it).getStrength();
+	
 	
 	return sum;
 }
@@ -127,44 +125,44 @@ int calculateSumOfCardInHand(std::vector<Card> &vec) {
 /**
 * Functions go through all possible variation of legal card sequences and returns the best possible.
 */
-std::string findBestHandForHigh(std::vector<std::vector<Card>> &allHands, int &value, int &playerCardsValue) {
+std::string findBestHandForHigh(const std::vector<std::vector<Card>> &allHands, int &totalBestHandCombinationValue, int &totalPlayerCardsSumValue) {
 
-	std::string best;
-	for (std::vector < std::vector<Card>>::iterator iter = allHands.begin(); iter != allHands.end(); iter++) {// Go through all the possible
+	std::string bestHandCombinationForHigh;
+	for (std::vector < std::vector<Card>>::const_iterator iter = allHands.begin(); iter != allHands.end(); iter++) {// Go through all the possible
 																											// vectors
 
-		std::string answer = checkWhatPokerHandThisIs(*iter);//Check what Poker Hand representation each vector have.
-		int tempValue = HandMapping::handMap[answer];//Evaluate the Poker Hand representation
-		if (tempValue > value) {//Check if it's better than previous value, change it if so.
-			playerCardsValue = calculateSumOfCardInHand(*iter);//Calculate the actual sum the cards in vector
-			value = tempValue;
-			best = answer;
+		std::string pokerHandCombination = checkWhatPokerHandThisIs(*iter);//Check what Poker Hand representation each vector have.
+		int currentBestCombinationHandValue = HandMapping::handMap[pokerHandCombination];//Evaluate the Poker Hand representation
+		if (currentBestCombinationHandValue > totalBestHandCombinationValue) {//Check if it's better than previous value, change it if so.
+			totalPlayerCardsSumValue = calculateSumOfCardInHand(*iter);//Calculate the actual sum the cards in vector
+			totalBestHandCombinationValue = currentBestCombinationHandValue;
+			bestHandCombinationForHigh = pokerHandCombination;
 		}
-		if (tempValue == value) {//If the current Poker Hand is equal to previous best Poker Hand
+		if (currentBestCombinationHandValue == totalBestHandCombinationValue) {//If the current Poker Hand is equal to previous best Poker Hand
 
 			int localCardsSum = calculateSumOfCardInHand(*iter);//Calculate the current cards sum.
-			if (localCardsSum > playerCardsValue)//Check if the current card sum is better than previous best card sum.
-				playerCardsValue = localCardsSum;//change it if so.
+			if (localCardsSum > totalPlayerCardsSumValue)//Check if the current card sum is better than previous best card sum.
+				totalPlayerCardsSumValue = localCardsSum;//change it if so.
 		}
 	}
-	return best;
+	return bestHandCombinationForHigh;
 }
 
 /**
 * Checks if the given vector has a representation that qualifies for Lo rules
 */
-bool checkIfQualifiedForLow(std::vector<Card> &vec) {
+bool checkIfQualifiedForLow(const std::vector<Card> &vec) {
+
 	std::map<char, int> tempMap;
-	bool valueFlag = false;
-	bool mapFlag = false;
-	for (int i = 0; i < vec.size(); i++) {//Go through each card.
-		if (CardMapping::mymap[vec[i].getRank()] > 8)//Check if all ranks are less than 9.
-			valueFlag = true;;
-		tempMap[vec[i].getRank()] += 1;
-		if (tempMap[vec[i].getRank()] > 1)// Check if all cards are unique.
-			mapFlag = true;
+	bool rankingFlag = false;
+	bool uniquenessFlag = false;
+	for (std::vector<Card>::const_iterator it = vec.begin(); it != vec.end(); it++) {
+		if (CardMapping::mymap[(*it).getRank()] > 8)
+			rankingFlag = true;
+		if ((tempMap[(*it).getRank()] += 1) > 1)
+			uniquenessFlag = true;
 	}
-	if (valueFlag == true || mapFlag == true)
+	if (rankingFlag == true || uniquenessFlag == true)
 		return false;
 	
 	return true;
@@ -173,10 +171,8 @@ bool checkIfQualifiedForLow(std::vector<Card> &vec) {
 /**
 * Function goes through all possible legal variants and selects those that are suitable for Lo game, and chooses the best one.
 */
-int findBestHandForLow(std::vector<std::vector<Card>> &allHands, int &value) {
+int findBestHandForLow(std::vector<std::vector<Card>> &allHands) {
 
-	std::string best;
-	std::vector<Card> bestVec;
 	int cardValue = INT_MAX;
 	for (std::vector < std::vector<Card>>::iterator iter = allHands.begin(); iter != allHands.end(); iter++) {//Go through all variants
 		if (checkIfQualifiedForLow(*iter)) {//Check if vector is suitable for Lo rules.																
@@ -201,28 +197,27 @@ int findBestHandForLow(std::vector<std::vector<Card>> &allHands, int &value) {
 /**
 * Function receives two values of each player and returns who has won the game of Lo.
 */
-std::string getLowWinner(int firstValue, int secondValue) {
+std::string getLowWinner(const int &firstPlayerValue, const int &secondPlayerValue) {
 
-	
-	if (firstValue == secondValue) {
-		if (firstValue == INT_MAX)
+	if (firstPlayerValue == secondPlayerValue) {
+		if (firstPlayerValue == INT_MAX)
 			return "No hand qualified for Low";
 		else {
-			std::string s = std::to_string(firstValue);
+			std::string s = std::to_string(firstPlayerValue);
 			if (s[s.length() - 1] == '1')
 				s[s.length() - 1] = 'A';
 			return "No hand qualified for Low" + (std::string)"(" +s + ")";
 		}
 	}
 	else {
-		if (firstValue < secondValue) {
-			std::string s = std::to_string(firstValue);
+		if (firstPlayerValue < secondPlayerValue) {
+			std::string s = std::to_string(firstPlayerValue);
 			if (s[s.length() - 1] == '1')
 				s[s.length() - 1] = 'A';
 			return "HandA wins Lo " + (std::string)"(" + s + ")";
 		}
 		else {
-			std::string s = std::to_string(secondValue);
+			std::string s = std::to_string(secondPlayerValue);
 			if (s[s.length() - 1] == '1')
 				s[s.length() - 1] = 'A';
 			return "HandB wins Lo " + (std::string)"(" + s + ")";
@@ -235,7 +230,7 @@ std::string getLowWinner(int firstValue, int secondValue) {
 * Function builds the vector of vectors for each player, that represents all possible legal combinations of card sequences.
 * Then the function uses all the functions from above to see which player has a better hand.
 */
-std::string findWinner(Hand handA, Hand handB, std::vector<Card> board) {
+std::string findWinner(Hand &handA, Hand &handB, std::vector<Card> &board) {
 
 	std::vector<std::vector<Card>> firstHandAllCombinations;// Matrix of combinations for player one.
 	std::vector<std::vector<Card>> secondHandAllCombinations;//Matrix of combinations for player two.
@@ -258,32 +253,31 @@ std::string findWinner(Hand handA, Hand handB, std::vector<Card> board) {
 	}
 	
 
-	int firstValue = 0;
-	int firstPlayerCardsValue = 0;
-	std::string firstString = findBestHandForHigh(firstHandAllCombinations,firstValue, firstPlayerCardsValue);//Find best option for player one in Hi game.
+	int firstPlayerCombinationValue = 0;
+	int firstPlayerCardsSumValue = 0;
+	std::string firstPlayerBestCombinationString = findBestHandForHigh(firstHandAllCombinations, firstPlayerCombinationValue, firstPlayerCardsSumValue);//Find best option for player one in Hi game.
 	
-	int secondValue = 0;
-	int secondPlayerCardsValue = 0;
-	std::string secondString = findBestHandForHigh(secondHandAllCombinations,secondValue, secondPlayerCardsValue);//Find best option for player two in Hi game.
-	std::cout << firstValue << " " << secondValue << std::endl;
-	int a = 0;
-	int bestLowFirstHand = findBestHandForLow(firstHandAllCombinations, a);//Find best option for player one in Lo game.
-	int bestLowSecondtHand = findBestHandForLow(secondHandAllCombinations, a);//Find best option for player two in Lo game.
+	int secondPlayerCombinationValue = 0;
+	int secondPlayerCardsSumValue = 0;
+	std::string secondPlayerBEstCombinationString = findBestHandForHigh(secondHandAllCombinations, secondPlayerCombinationValue, secondPlayerCardsSumValue);//Find best option for player two in Hi game.
+	
+	int bestLowFirstHand = findBestHandForLow(firstHandAllCombinations);//Find best option for player one in Lo game.
+	int bestLowSecondtHand = findBestHandForLow(secondHandAllCombinations);//Find best option for player two in Lo game.
 
 	std::string lowWinner = getLowWinner(bestLowFirstHand, bestLowSecondtHand);//Decied who is the winner in the Lo Game.
 
-	if (firstValue == secondValue) {//Deciedes who is the winner in the Hi Game.
+	if (firstPlayerCombinationValue == secondPlayerCombinationValue) {//Deciedes who is the winner in the Hi Game.
 		
-		if (firstPlayerCardsValue > secondPlayerCardsValue)
-			return "HandA wins Hi" + (std::string)" (" + firstString + "); " + lowWinner;
-		else if (firstPlayerCardsValue < secondPlayerCardsValue)
-			return "HandB wins Hi" + (std::string)" (" + secondString + "); " + lowWinner;
+		if (firstPlayerCardsSumValue > secondPlayerCardsSumValue)
+			return "HandA wins Hi" + (std::string)" (" + firstPlayerBestCombinationString + "); " + lowWinner;
+		else if (firstPlayerCardsSumValue < secondPlayerCardsSumValue)
+			return "HandB wins Hi" + (std::string)" (" + secondPlayerBEstCombinationString + "); " + lowWinner;
 		else
-			return "Split pot Hi" + (std::string)" (" + firstString + "); " + lowWinner;
+			return "Split pot Hi" + (std::string)" (" + firstPlayerBestCombinationString + "); " + lowWinner;
 	}
 	else
-		return firstValue > secondValue ? "HandA wins Hi" + (std::string)" (" + firstString + "); " + lowWinner :
-										  "HandB wins Hi" + (std::string)" (" + secondString + "); " + lowWinner;
+		return firstPlayerCombinationValue > secondPlayerCombinationValue ? "HandA wins Hi" + (std::string)" (" + firstPlayerBestCombinationString + "); " + lowWinner :
+										  "HandB wins Hi" + (std::string)" (" + secondPlayerBEstCombinationString + "); " + lowWinner;
 }
 
 /**
@@ -305,10 +299,10 @@ void buildBoardCardsVector(std::vector<Card> &vec, std::string source) {
 /**
 * Receives raw input of strings, parses the input, creates the players and starts the match.
 */
-std::string setUpGame(std::string a, std::string b, std::string dealer) {
+std::string setUpGame(std::string firstPlayerHand, std::string secondPlayerHand, std::string dealer) {
 
-	Hand handA(a);
-	Hand handB(b);
+	Hand handA(firstPlayerHand);
+	Hand handB(secondPlayerHand);
 
 	std::vector<Card> boardVector;
 	buildBoardCardsVector(boardVector, dealer);//Creates vector of cards for the dealer.
@@ -319,7 +313,7 @@ std::string setUpGame(std::string a, std::string b, std::string dealer) {
 /**
 * Receives the input from file as vector of strings, works with each string seperately
 */
-void parseInput(std::vector<std::string> input , char *&filePath) {
+void parseInput(std::vector<std::string> &input , char *&filePath) {
 	
 	std::vector<std::string> output;
 	for (std::vector<std::string>::iterator it = input.begin(); it != input.end(); it++) {//For each string in the vector.
@@ -356,7 +350,6 @@ void parseInput(std::vector<std::string> input , char *&filePath) {
 	
 }
 
-
 int main(int argc, char *argv[]) {
 
 	std::ifstream inputFile;
@@ -372,7 +365,8 @@ int main(int argc, char *argv[]) {
 		parseInput(inputStrings, argv[2]);
 
 	}
+	else
+		std::cout << "Failure while openning the file" << std::endl;
 
 	inputFile.close();
-
 }

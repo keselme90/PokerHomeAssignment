@@ -1,6 +1,4 @@
 #include "Card.h"
-#include "CardMapping.h"
-#include <string>
 
 Card::Card(std::string card) {
 
@@ -18,12 +16,12 @@ std::string Card::toString() {
 	return fullCard;
 }
 
- char Card::getRank() const
+const char Card::getRank() const
 {
 	return rank;
 }
 
- char Card::getSuit() 
+ const char Card::getSuit() const
 {
 	return suit;
 }

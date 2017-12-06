@@ -21,7 +21,7 @@ Hand::Hand(std::string cards) {
 /**
 Returns a specific card from the vector according a given index.
 */
-Card Hand::getCard(int index) {
+const Card Hand::getCard(int index) const {
 
 	return myCards[index];
 }

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef POKERHANDMAPPING_H
+#define POKERHANDMAPPING_H
+
 #include <string>
 #include <map>
 
@@ -11,3 +13,5 @@ public:
 
 	static std::map<std::string, int> handMap;
 };
+
+#endif

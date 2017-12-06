@@ -1,5 +1,8 @@
-#pragma once
+#ifndef CARD_H
+#define CARD_H
+
 #include<string>
+#include "CardMapping.h"
 
 class Card {
 
@@ -14,7 +17,9 @@ public:
 	
 	Card(std::string card);
 	std::string toString();
-	char getRank() const;
-	char getSuit();
+	const char getRank() const;
+	const char getSuit() const;
 	const unsigned int getStrength() const;
 };
+
+#endif

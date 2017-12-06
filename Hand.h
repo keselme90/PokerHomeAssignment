@@ -1,7 +1,9 @@
-#pragma once
+#ifndef HAND_H
+#define HAND_H
+
 #include <vector>
-#include "Card.h"
 #include <iostream>
+#include "Card.h"
 #include "CardMapping.h"
 
 /**
@@ -18,6 +20,8 @@ public:
 
 	Hand(std::string cards);
 	void printHand();
-	Card getCard(int index);
+	const Card getCard(int index) const;
 
 };
+
+#endif
